@@ -46,12 +46,15 @@ for i in range(num_video):
     print(i, '/', num_video, video_name)
 
     # save results
-    output_dir = args.result_dir + video_path[len(args.videos_dir):video_path.rfind('/')]
+    output_dir = os.path.join(
+        args.result_dir,
+        os.path.relpath(video_path, args.videos_dir).rsplit(os.sep, 1)[0]
+    )
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     # 拼接保存路径并创建
-    save_path = os.path.join(output_dir, video_name + '.avi')
+    save_path = os.path.join(output_dir, video_name)
 
     # 确保保存路径存在
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
