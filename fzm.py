@@ -42,7 +42,7 @@ print("Find ", num_video, " videos")
 # Process
 for i in range(num_video):
     video_path = video_list[i]
-    video_name = video_path[video_path.rfind('/') + 1:video_path.rfind('.')]
+    video_name = os.path.basename(video_path)  # 获取文件名（包含扩展名）
     print(i, '/', num_video, video_name)
 
     # save results
