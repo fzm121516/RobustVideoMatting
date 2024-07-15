@@ -28,13 +28,13 @@ from inference import convert_video
 
 # --------------- Arguments ---------------
 parser = argparse.ArgumentParser(description='Test Images')
-parser.add_argument('--images-dir', type=str, required=True)
+parser.add_argument('--videos-dir', type=str, required=True)
 parser.add_argument('--result-dir', type=str, required=True)
 
 args = parser.parse_args()
 
 # Load Images
-video_list = sorted([*glob.glob(os.path.join(args.images_dir, '**', '*.avi'), recursive=True)])
+video_list = sorted([*glob.glob(os.path.join(args.videos_dir, '**', '*.avi'), recursive=True)])
 
 num_video = len(video_list)
 print("Find ", num_video, " videos")
@@ -42,16 +42,16 @@ print("Find ", num_video, " videos")
 # Process
 for i in range(num_video):
     video_path = video_list[i]
-    image_name = video_path[video_path.rfind('/') + 1:video_path.rfind('.')]
-    print(i, '/', num_video, image_name)
+    video_name = video_path[video_path.rfind('/') + 1:video_path.rfind('.')]
+    print(i, '/', num_video, video_name)
 
     # save results
-    output_dir = args.result_dir + video_path[len(args.images_dir):video_path.rfind('/')]
+    output_dir = args.result_dir + video_path[len(args.videos_dir):video_path.rfind('/')]
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     # 拼接保存路径并创建
-    save_path = os.path.join(output_dir, image_name + '.avi')
+    save_path = os.path.join(output_dir, video_name + '.avi')
 
     # 确保保存路径存在
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
