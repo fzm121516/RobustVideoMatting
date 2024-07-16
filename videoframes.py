@@ -20,8 +20,13 @@ print("Find ", num_video, " videos")  # 输出找到的视频数量
 # 处理每个视频
 for i in range(num_video):
     video_path = video_list[i]  # 当前视频路径
-    video_name = os.path.basename(video_path)  # 获取文件名（包含扩展名）
-    print(i, '/', num_video, video_name)  # 输出处理进度
+    # video_name = os.path.basename(video_path)  # 获取文件名（包含扩展名）
+    # 获取文件名（包含扩展名）
+    video_name_with_ext = os.path.basename(video_path)
+
+    # 去掉扩展名
+    video_name = os.path.splitext(video_name_with_ext)[0]
+    print(i, '/', num_video, video_name_with_ext)  # 输出处理进度
 
     # save results
     output_dir = os.path.join(
