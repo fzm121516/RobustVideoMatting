@@ -34,7 +34,7 @@ parser.add_argument('--result-dir', type=str, required=True)
 args = parser.parse_args()
 
 # Load Images
-video_list = sorted([*glob.glob(os.path.join(args.videos_dir, '**', '*.mp4'), recursive=True)])
+video_list = sorted([*glob.glob(os.path.join(args.videos_dir, '**', '*.avi'), recursive=True)])
 
 num_video = len(video_list)
 print("Find ", num_video, " videos")
@@ -74,11 +74,11 @@ for i in range(num_video):
         # input_resize=(1920, 1080),       # [可选项] 缩放视频大小
         # downsample_ratio=0.25,           # [可选项] 下采样比，若 None，自动下采样至 512px
         output_type='png_sequence',  # 可选 "video"（视频）或 "png_sequence"（PNG 序列）
-        output_composition=save_path,  # 若导出视频，提供文件路径。若导出 PNG 序列，提供文件夹路径
-        # output_alpha=save_path,  # [可选项] 输出透明度预测
+        # output_composition=save_path,  # 若导出视频，提供文件路径。若导出 PNG 序列，提供文件夹路径
+        output_alpha=save_path,  # [可选项] 输出透明度预测
         # output_foreground="fgr.mp4",  # [可选项] 输出前景预测
         # output_video_mbps=4,  # 若导出视频，提供视频码率
-        # seq_chunk=12,  # 设置多帧并行计算
+        seq_chunk=1,  # 设置多帧并行计算
         # num_workers=1,                   # 只适用于图片序列输入，读取线程
         progress=True  # 显示进度条
     )
