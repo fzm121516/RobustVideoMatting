@@ -15,7 +15,7 @@ parser.add_argument('--result-dir', type=str, required=True)
 args = parser.parse_args()
 
 # Load Video List
-video_list = sorted([*glob.glob(os.path.join(args.videos_dir, '**', '*.mp4'), recursive=True)])
+video_list = sorted([*glob.glob(os.path.join(args.videos_dir, '**', '*.avi'), recursive=True)])
 
 num_video = len(video_list)
 print("Find ", num_video, " videos")
