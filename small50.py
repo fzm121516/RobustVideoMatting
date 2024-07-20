@@ -11,7 +11,7 @@ model = YOLO("yolov8n.pt")  # load an official model
 parser = argparse.ArgumentParser(description='Test Images')
 parser.add_argument('--videos-dir', type=str, required=True)
 parser.add_argument('--images-dir', type=str, required=True)
-parser.add_argument('--result-dir', type=str, required=True)
+
 args = parser.parse_args()
 
 # Load Video List
@@ -36,12 +36,7 @@ for i in range(num_video):
     )
     if not os.path.exists(images_dir):
         os.makedirs(images_dir)
-    output_dir = os.path.join(
-        args.result_dir,
-        os.path.relpath(video_path, args.videos_dir).rsplit(os.sep, 1)[0]
-    )
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+
 
     # Process each image in the directory
     image_files = sorted(glob.glob(os.path.join(images_dir, '*.jpg')) + glob.glob(os.path.join(images_dir, '*.png')))
