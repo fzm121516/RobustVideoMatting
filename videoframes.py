@@ -12,7 +12,7 @@ parser.add_argument('--result-dir', type=str, required=True)   # 结果保存文
 args = parser.parse_args()
 
 # 加载视频文件
-video_list = sorted([*glob.glob(os.path.join(args.videos_dir, '**', '*.avi'), recursive=True)])
+video_list = sorted([*glob.glob(os.path.join(args.videos_dir, '**', '*.mp4'), recursive=True)])
 
 num_video = len(video_list)  # 视频数量
 print("Find ", num_video, " videos")  # 输出找到的视频数量

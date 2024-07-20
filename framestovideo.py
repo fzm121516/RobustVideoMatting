@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser(description='Test Images')
 parser.add_argument('--videos-dir', type=str, required=True)
 parser.add_argument('--images-dir', type=str, required=True)
 parser.add_argument('--result-dir', type=str, required=True)
-parser.add_argument('--fps', type=int, default=30, help='Frames per second for the output video')  # 视频帧率
+parser.add_argument('--fps', type=int, default=25, help='Frames per second for the output video')  # 视频帧率
 
 args = parser.parse_args()
 
