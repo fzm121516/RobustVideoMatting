@@ -46,7 +46,7 @@ for i in range(num_video):
         os.makedirs(output_dir)
 
     # 生成保存路径
-    save_path = os.path.join(output_dir, f"{name}.png")  # 拼接保存路径
+    save_path = os.path.join(output_dir, f"{0}{name}.png")  # 拼接保存路径
 
     # 确保保存路径存在
     os.makedirs(os.path.dirname(save_path), exist_ok=True)  # 确保保存路径的目录存在
