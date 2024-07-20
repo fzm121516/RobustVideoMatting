@@ -80,7 +80,9 @@ for i in range(num_video):
     # Get the best 60 images
     best_image_files = image_files[max_start_index:max_start_index + window_size]
 
-    # Step 3: Crop and save the best images
+    # Step 3: Resize and save the best images
+    target_width, target_height = 480, 960
+
     for idx, image_path in enumerate(best_image_files):
         image = cv2.imread(image_path)
         if image is None:
@@ -94,36 +96,34 @@ for i in range(num_video):
                 class_name = model.names[class_idx]
                 confidence = box.conf.item()  # Get confidence
 
-                if class_name == "person" :
+                if class_name == "person":
                     x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
-                    center_x, center_y = (x1 + x2) // 2, (y1 + y2) // 2
+                    bbox_height = y2 - y1
+                    bbox_width = bbox_height / 2  # Set width to half of height
 
-                    crop_width, crop_height = 480, 960
-                    crop_x1 = center_x - crop_width // 2
-                    crop_y1 = center_y - crop_height // 2
-                    crop_x2 = center_x + crop_width // 2
-                    crop_y2 = center_y + crop_height // 2
+                    # Adjust bounding box to center crop with new dimensions
+                    center_x = (x1 + x2) / 2
+                    center_y = (y1 + y2) / 2
 
-                    # Adjust the crop box if it goes beyond the image boundaries
-                    if crop_x1 < 0:
-                        crop_x2 -= crop_x1  # Shift right
-                        crop_x1 = 0
-                    if crop_y1 < 0:
-                        crop_y2 -= crop_y1  # Shift down
-                        crop_y1 = 0
-                    if crop_x2 > image.shape[1]:
-                        crop_x1 -= (crop_x2 - image.shape[1])  # Shift left
-                        crop_x2 = image.shape[1]
-                    if crop_y2 > image.shape[0]:
-                        crop_y1 -= (crop_y2 - image.shape[0])  # Shift up
-                        crop_y2 = image.shape[0]
+                    new_x1 = int(center_x - bbox_width / 2)
+                    new_y1 = int(center_y - bbox_height / 2)
+                    new_x2 = int(center_x + bbox_width / 2)
+                    new_y2 = int(center_y + bbox_height / 2)
 
-                    cropped_image = image[crop_y1:crop_y2, crop_x1:crop_x2]
+                    # Ensure new coordinates are within image bounds
+                    new_x1 = max(new_x1, 0)
+                    new_y1 = max(new_y1, 0)
+                    new_x2 = min(new_x2, image.shape[1])
+                    new_y2 = min(new_y2, image.shape[0])
 
-                    # Save the cropped image
+                    # Crop and resize the bounding box region to target size
+                    cropped_region = image[new_y1:new_y2, new_x1:new_x2]
+                    resized_cropped_region = cv2.resize(cropped_region, (target_width, target_height))
+
+                    # Save the resized image
                     base_name = os.path.basename(image_path)
-                    cropped_save_path = os.path.join(output_dir, f"person_{idx}.png")
-                    cv2.imwrite(cropped_save_path, cropped_image)
-                    print(f"Saved cropped image: {cropped_save_path}")
+                    resized_save_path = os.path.join(output_dir, f"person-{idx:04d}.png")
+                    cv2.imwrite(resized_save_path, resized_cropped_region)
+                    print(f"Saved resized image: {resized_save_path}")
 
                     print(f"Class: {class_name}, Confidence: {confidence}")
