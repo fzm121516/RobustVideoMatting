@@ -70,7 +70,7 @@ for i in range(num_video):
     if best_image_path is not None:
         image = cv2.imread(best_image_path)
         if image is not None:
-            output_image_path = os.path.join(output_dir, "ref.png")
+            output_image_path = os.path.join(output_dir, f"{video_name}.png")
             cv2.imwrite(output_image_path, image)
             print(f"Saved highest confidence image to: {output_image_path}")
         else:
