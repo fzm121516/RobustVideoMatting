@@ -89,6 +89,6 @@ for i in range(num_video):
             print(f"Failed to load image: {image_path}")
             continue
 
-        output_image_path = os.path.join(output_dir, f"best_{idx+1:04d}.png")
+        output_image_path = os.path.join(output_dir, f"best_{idx:04d}.png")
         cv2.imwrite(output_image_path, image)
         print(f"Saved resized image to: {output_image_path}")
