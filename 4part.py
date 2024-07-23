@@ -3,8 +3,8 @@ import shutil
 
 # 定义源文件夹和目标文件夹路径
 source_dir = '/dataset-b-frames-50-original1'
-part_dirs = ['/dataset-b-frames-50-original1/part1', '/dataset-b-frames-50-original1/part2',
-             '/dataset-b-frames-50-original1/part3', '/dataset-b-frames-50-original1/part4']
+part_dirs = ['/dataset-b-frames-50-original/part1', '/dataset-b-frames-50-original/part2',
+             '/dataset-b-frames-50-original/part3', '/dataset-b-frames-50-original/part4']
 
 # 获取源文件夹中的所有子文件夹
 folders = [f for f in os.listdir(source_dir) if os.path.isdir(os.path.join(source_dir, f))]
