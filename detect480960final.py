@@ -81,7 +81,7 @@ for i in range(num_video):
     best_image_files = image_files[max_start_index:max_start_index + window_size]
 
     # Step 3: Resize and save the best images
-    target_width, target_height = 120, 240
+    target_width, target_height = 480, 960
 
     for idx, image_path in enumerate(best_image_files):
         image = cv2.imread(image_path)
