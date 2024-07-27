@@ -2,9 +2,9 @@ import os
 import shutil
 
 # 定义源文件夹和目标文件夹路径
-source_dir = '/dataset-b-frames-50-original1'
-target_dir1 = '/dataset-b-frames-50-original-train'
-target_dir2 = '/dataset-b-frames-50-original-test'
+source_dir = 'E:/CASIA_Gait_Dataset/DatasetB'
+target_dir1 = 'E:/CASIA_Gait_Dataset/DatasetB-train'
+target_dir2 = 'E:/CASIA_Gait_Dataset/DatasetB-test'
 
 # 获取源文件夹中的所有子文件夹，并按名称排序
 folders = sorted([f for f in os.listdir(source_dir) if os.path.isdir(os.path.join(source_dir, f))])
