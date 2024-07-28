@@ -1,8 +1,11 @@
-
+import torch
+from model import MattingNetwork
 import argparse
 import os
 import glob
 
+model = MattingNetwork('mobilenetv3').eval().cuda()  # or "resnet50"
+model.load_state_dict(torch.load('rvm_mobilenetv3.pth'))
 
 from inference import convert_video
 
