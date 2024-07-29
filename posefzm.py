@@ -2,7 +2,9 @@ import argparse
 import os
 import glob
 import random  # For random selection
-import cv2  # OpenCV for image processing
+import subprocess  # For running another Python script
+import yaml  # For creating the YAML file
+
 
 # --------------- Arguments ---------------
 parser = argparse.ArgumentParser(description='Test Images')
@@ -10,6 +12,7 @@ parser.add_argument('--videos-dir', type=str, required=True)
 parser.add_argument('--original-videos-png-dir', type=str, required=True)
 parser.add_argument('--target-videos-dir', type=str, required=True)
 parser.add_argument('--result-dir', type=str, required=True)
+parser.add_argument('--yaml-file', type=str, default='./myconfig/test1.yaml', help='Output YAML file path')
 parser.add_argument('--random-seed', type=int, default=42, help='Random seed for reproducibility')
 args = parser.parse_args()
 
@@ -21,6 +24,25 @@ video_list = sorted([*glob.glob(os.path.join(args.videos_dir, '**', '*.avi'), re
 
 num_video = len(video_list)
 print("Found ", num_video, " videos")
+
+
+# Function to run pose_align.py with specified arguments
+def run_pose_align(imgfn_refer, vidfn, outfn_align_pose_video):
+    command = [
+        'python', 'pose_align.py',
+        '--imgfn_refer', imgfn_refer,
+        '--vidfn', vidfn,
+        '--outfn_align_pose_video', outfn_align_pose_video
+    ]
+    result = subprocess.run(command, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"Error running pose_align.py: {result.stderr}")
+    else:
+        print(f"Successfully ran pose_align.py: {result.stdout}")
+
+
+# Dictionary to store the test cases for the YAML file
+test_cases = {}
 
 # Process each video
 for i in range(num_video):
@@ -43,7 +65,7 @@ for i in range(num_video):
         args.original_videos_png_dir,
         os.path.relpath(video_path, args.videos_dir).rsplit(os.sep, 1)[0]
     )
-    # Append video_name and .mp4 to original_videos_dir
+    # Append video_name and .png to original_videos_dir
     imgfn_refer = os.path.join(original_videos_png_dir, video_name + '.png')
 
     target_videos_dir = os.path.join(
@@ -69,6 +91,16 @@ for i in range(num_video):
         os.makedirs(result_dir)
     outfn_align_pose_video = os.path.join(result_dir, video_name + '.mp4')
 
+    # Run the pose_align.py script with the specified arguments
+    run_pose_align(imgfn_refer, vidfn, outfn_align_pose_video)
 
+    # Add to test cases dictionary
+    if imgfn_refer not in test_cases:
+        test_cases[imgfn_refer] = []
+    test_cases[imgfn_refer].append(outfn_align_pose_video)
 
+# Write test cases to YAML file
+with open(args.yaml_file, 'w') as yaml_file:
+    yaml.dump({'test_cases': test_cases}, yaml_file, default_flow_style=False)
 
+print(f"YAML file created at {args.yaml_file}")
