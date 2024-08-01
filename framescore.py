@@ -9,8 +9,8 @@ model = YOLO("yolov8n.pt")  # load an official model
 allowed_gait_types = ['nm-05', 'nm-06', 'bg-01', 'bg-02', 'cl-01', 'cl-02']
 # --------------- Arguments ---------------
 parser = argparse.ArgumentParser(description='Test Images')
-parser.add_argument('--videos-dir', type=str, required=True)
-parser.add_argument('--images-dir', type=str, required=True)
+parser.add_argument('--videos-dir', type=str,  default="/home/fanzheming/zm/mygait/datasets/CASIA-B/dataset-b3")
+parser.add_argument('--images-dir', type=str, default="/home/fanzheming/zm/mygait/datasets/CASIA-B/dataset-b-frames-50-original-1280960")
 args = parser.parse_args()
 
 # Load Video List
@@ -18,6 +18,11 @@ video_list = sorted([*glob.glob(os.path.join(args.videos_dir, '**', '*.avi'), re
 
 num_video = len(video_list)
 print("Find ", num_video, " videos")
+
+# Initialize global counters and accumulators
+total_images = 0
+total_confidence = 0
+num_images_with_highest_person_confidence = 0
 
 # Process each video
 for i in range(num_video):
@@ -59,11 +64,7 @@ for i in range(num_video):
         print(f"Invalid Gait ID {gait_id}, skipping.")
         continue
 
-    # Initialize counters and accumulators
-    num_images_with_highest_person_confidence = 0
-    total_images = len(image_files)
-    total_confidence = 0
-
+    # Process images for the current video
     for image_path in image_files:
         image = cv2.imread(image_path)
         if image is None:
@@ -86,17 +87,18 @@ for i in range(num_video):
                 if confidence > highest_confidence:
                     highest_confidence = confidence
 
-        # Update total confidence and check if "person" has the highest confidence
+        # Update global counters and accumulators
         total_confidence += highest_confidence
         if person_confidence == highest_confidence:
             num_images_with_highest_person_confidence += 1
 
-    # Calculate and print the average confidence and fraction
-    if total_images > 0:
-        average_confidence = total_confidence / total_images
-        fraction_person_highest_confidence = num_images_with_highest_person_confidence / total_images
-        print(f"Average Confidence Score for {video_name}: {average_confidence:.4f}")
-        print(
-            f"Fraction of images where 'person' has the highest confidence in {video_name}: {fraction_person_highest_confidence:.4f}")
-    else:
-        print(f"No images processed for {video_name}")
+        total_images += 1
+
+# Calculate and print the average confidence and fraction across all images
+if total_images > 0:
+    average_confidence = total_confidence / total_images
+    fraction_person_highest_confidence = num_images_with_highest_person_confidence / total_images
+    print(f"Average Confidence Score across all images: {average_confidence:.4f}")
+    print(f"Fraction of images where 'person' has the highest confidence across all images: {fraction_person_highest_confidence:.4f}")
+else:
+    print("No images processed.")
