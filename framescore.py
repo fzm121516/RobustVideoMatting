@@ -11,7 +11,7 @@ allowed_gait_types = ['nm-05', 'nm-06', 'bg-01', 'bg-02', 'cl-01', 'cl-02']
 # --------------- Arguments ---------------
 parser = argparse.ArgumentParser(description='Test Images')
 parser.add_argument('--videos-dir', type=str,  default="/home/fanzheming/zm/mygait/datasets/CASIA-B/dataset-b3")
-parser.add_argument('--images-dir', type=str, default="/home/fanzheming/zm/mygait/datasets/CASIA-B/dataset-b-frames-50-original-480960")
+parser.add_argument('--images-dir', type=str, default="/home/fanzheming/zm/mygait/datasets/CASIA-B/dataset-b-50-480960-video-test-a-frames")
 args = parser.parse_args()
 
 # Load Video List
@@ -25,6 +25,7 @@ total_images = 0
 total_confidence = 0
 num_images_with_highest_person_confidence = 0
 num_images_with_person_detected = 0  # Counter for images with person detected
+num_groups_with_person_detected = 0  # Counter for groups with more than 45 images with person detected
 
 # Process each video
 for i in range(num_video):
@@ -65,6 +66,9 @@ for i in range(num_video):
     except ValueError:
         # print(f"Invalid Gait ID {gait_id}, skipping.")
         continue
+
+    # Initialize a counter for images with person detected in the current group
+    person_detected_count = 0
 
     # Process images for the current video
     for image_path in image_files:
@@ -109,8 +113,13 @@ for i in range(num_video):
 
         if person_detected:
             num_images_with_person_detected += 1
+            person_detected_count += 1
 
         total_images += 1
+
+    # Check if the current group has more than 45 images with person detected
+    if person_detected_count > 45:
+        num_groups_with_person_detected += 1
 
 # Calculate and print the average confidence and fraction across all images
 if total_images > 0:
@@ -120,3 +129,13 @@ if total_images > 0:
     print(f"Fraction of images where 'person' is detected: {fraction_person_detected:.4f}")
 else:
     print("No images processed.")
+
+# Calculate and print the percentage of groups with more than 45 images where a person is detected
+if num_video > 0:
+    percentage_groups_with_person_detected = (num_groups_with_person_detected / num_video) * 100
+    print(f"Percentage of groups with more than 45 images where a person is detected: {percentage_groups_with_person_detected:.2f}%")
+else:
+    print("No video groups processed.")
+
+# Print the number of groups with more than 45 images where a person is detected
+print(f"Number of groups with more than 45 images where a person is detected: {num_groups_with_person_detected}")
